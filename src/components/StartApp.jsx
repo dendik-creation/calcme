@@ -30,7 +30,7 @@ export const StartApp = (props) => {
             Cuaca-Ku
           </h2>
           <span className="text-xl font-medium text-blue-custom-950">
-            Weather App used React Js
+            Aplikasi Cuaca Berbasis React Vite
           </span>
         </div>
       </Transition>

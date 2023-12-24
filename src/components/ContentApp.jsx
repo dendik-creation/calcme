@@ -95,7 +95,7 @@ export const ContentApp = () => {
             {" "}
             <div className="flex justify-center h-full mt-40 gap-7 items-center flex-col">
               <i className="bi bi-search text-8xl"></i>
-              <div className="text-2xl">Cari Kota di Cuaca-Ku</div>
+              <div className="text-2xl">Cari Lokasi di Cuaca-Ku</div>
             </div>
           </Transition>
 
@@ -111,7 +111,9 @@ export const ContentApp = () => {
             {data?.message ? (
               <div className="flex justify-center h-full mt-40 gap-7 items-center flex-col">
                 <i className="bi bi-patch-question-fill text-8xl"></i>
-                <div className="text-2xl">Kota Tidak Ditemukan</div>
+                <div className="text-2xl">
+                  Lokasi "{search ? search : null}" Tidak Ditemukan
+                </div>
               </div>
             ) : (
               <div className="">
