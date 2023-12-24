@@ -1,6 +1,6 @@
 import { Transition } from "@headlessui/react";
 import React, { useState } from "react";
-import { findCity } from "./RequestApi";
+import { findCity } from "./RequestAPI";
 
 export const ContentApp = () => {
   const [show, setShow] = useState(false);
@@ -111,9 +111,7 @@ export const ContentApp = () => {
             {data?.message ? (
               <div className="flex justify-center h-full mt-40 gap-7 items-center flex-col">
                 <i className="bi bi-patch-question-fill text-8xl"></i>
-                <div className="text-2xl">
-                  Lokasi "{search ? search : null}" Tidak Ditemukan
-                </div>
+                <div className="text-2xl">Lokasi Tidak Ditemukan</div>
               </div>
             ) : (
               <div className="">
@@ -168,7 +166,9 @@ export const ContentApp = () => {
                   <div className="flex justify-center gap-4 items-center">
                     <i className="bi bi-thermometer-half text-2xl opacity-70"></i>
                     <div className="flex flex-col">
-                      <span className="text-xl">{data?.main.feels_like}°c</span>
+                      <span className="text-xl">
+                        {Math.floor(data?.main.feels_like)}°c
+                      </span>
                       <div className="opacity-70 text-sm">Suhu Yang Terasa</div>
                     </div>
                   </div>
