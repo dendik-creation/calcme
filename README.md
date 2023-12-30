@@ -1,8 +1,6 @@
-# Cuaca-Ku Weather App
+# CalcMe
 
-It is a weather application that can display data status including weather, temperature, pressure, and wind speed in a certain area.
-
-The weather data obtained comes from a weather API provider service called [OpenWeather](https://openweathermap.org/api).
+CalcMe is a calculator app that can be used for basic math operations such as addition, subtraction, multiplication, and division.
 
 ## Authors
 
@@ -11,7 +9,7 @@ The weather data obtained comes from a weather API provider service called [Open
 ## Tech Stack
 
 - Frontend : React Js, Tailwind CSS
-- Tools : Axios, HeadlessUI
+- Tools : HeadlessUI
 
 ## Installation
 
@@ -22,14 +20,13 @@ The weather data obtained comes from a weather API provider service called [Open
     npm install
 ```
 
-3. Get Weather API Key from [OpenWeather](https://openweathermap.org/api)
-4. Start Server
+3. Start Server
 
 ```bash
     npm run dev
 ```
 
-5. Deploy project
+4. Deploy project
 
 ```bash
     npm run build
