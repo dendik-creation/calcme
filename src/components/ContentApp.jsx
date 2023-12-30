@@ -1,183 +1,190 @@
 import { Transition } from "@headlessui/react";
-import React, { useState } from "react";
-import { findCity } from "./RequestAPI";
-
+import React, { useEffect, useState } from "react";
+import { buttons } from "./data/Button";
 export const ContentApp = () => {
   const [show, setShow] = useState(false);
-  const [finding, setFinding] = useState(false);
-  const [search, setSearch] = useState("");
-  const [data, setData] = useState(null);
-  const loadContent = () => {
+  const [value, setValue] = useState("");
+  useEffect(() => {
     setTimeout(() => {
       setShow(true);
     }, 500);
-  };
-  loadContent();
+  }, []);
 
-  const handleChange = (e) => {
-    setSearch(e.target.value);
+  useEffect(() => {
+    document.addEventListener("keyup", (e) => {
+      const found = buttons.find((item) => item.key == e.key);
+      if (found) {
+        //
+        clickSound();
+        buttonClick(`${found.value}-btn`);
+        setTimeout(() => {
+          if (
+            found.type == "number" ||
+            found.type == "operator" ||
+            found.type == "dot"
+          ) {
+            setValue((prev) => prev + found.value);
+          } else if (found.type == "delete") {
+            setValue((prev) => prev.slice(0, -1));
+          } else if (found.type == "clear") {
+            setValue("");
+          } else if (found.type == "equal") {
+            handleCalculate();
+          }
+        }, 150);
+      }
+    });
+  }, []);
+
+  const clickSound = () => {
+    const click = new Audio("./click.wav");
+    click.play();
   };
 
-  const searchCity = (e) => {
-    e.preventDefault();
-    if (search) {
-      setFinding(true);
-      findCity(search)
-        .then((res) => {
-          setTimeout(() => {
-            setFinding(false);
-            setData(res);
-          }, 200);
-        })
-        .catch((err) => {
-          setTimeout(() => {
-            setFinding(false);
-            setData(err);
-          }, 200);
-        });
+  const Button = (props) => {
+    return (
+      <>
+        <button
+          id={`${props.value}-btn`}
+          value={props.value}
+          onClick={handleClick}
+          name={props.type}
+          disabled={
+            (props.type == "equal" || props.type == "operator") && value == ""
+          }
+          className={`flex justify-center transition-all disabled:transition-all text-2xl font-bold items-center disabled:opacity-30 h-full rounded-md shadow-inner shadow-daisy-bush-100/30 ${
+            props.type == "number" || props.type == "dot"
+              ? "bg-daisy-bush-900"
+              : props.type == "delete" || props.type == "clear"
+              ? "bg-daisy-bush-700"
+              : props.type == "operator"
+              ? "bg-daisy-bush-400"
+              : props.type == "equal"
+              ? "bg-daisy-bush-100 text-daisy-bush-950"
+              : ""
+          } ${
+            props.type == "equal" || props.type == "clear" ? "col-span-2" : ""
+          }
+                  `}
+        >
+          {props.name == "backspace" ? (
+            <i className="fa-solid fa-backspace"></i>
+          ) : props.name == "/" ? (
+            <i className="fa-solid fa-divide"></i>
+          ) : (
+            props.name
+          )}
+        </button>
+      </>
+    );
+  };
+
+  const handleClick = async (event) => {
+    clickSound();
+    buttonClick(event.target.id);
+    setTimeout(() => {
+      handleChange(event.target.name, event.target.value);
+    }, 150);
+  };
+
+  const handleCalculate = () => {
+    try {
+      const result = eval(value);
+      setValue(result.toString());
+    } catch (error) {
+      setValue("Error");
+    }
+  };
+
+  const handleChange = (type, newValue) => {
+    if (type == "number" || type == "operator" || type == "dot") {
+      setValue((prev) => prev + newValue);
+    }
+    if (type == "delete") {
+      setValue((prev) => prev.slice(0, -1));
+    }
+    if (type == "clear") {
+      setValue("");
+    }
+    if (type == "equal") {
+      handleCalculate();
+    }
+  };
+
+  const buttonClick = (id) => {
+    const btnId = document.getElementById(id);
+    if (btnId) {
+      btnId.style.transition = "all ease 0.3s";
+      btnId.style.transform = "translateY(15px)";
+      setTimeout(() => {
+        btnId.style.transition = "all ease 0.3s";
+        btnId.style.transform = "translateY(0px)";
+      }, 50);
     }
   };
   return (
     <>
-      <Transition
-        show={show}
-        enter="transform transition duration-[500ms] delay-200"
-        enterFrom="opacity-0 translate-y-24"
-        enterTo="opacity-100 translate-y-0"
-        leave="transform duration-[500ms] transition ease-in-out"
-        leaveFrom="opacity-100 -translate-y-0"
-        leaveTo="opacity-0 -translate-y-24"
-        className="flex flex-col justify-center items-center gap-6 mb-20 h-full"
-      >
-        <div
-          className={`bg-blue-custom-950 max-w-7xl w-96 md:w-full px-4 py-4 rounded-md text-blue-custom-50 h-[600px] ${
-            finding || data?.message ? "h-[600px]" : null
-          }`}
+      <div className="flex flex-col mb-10 justify-center items-start w-full">
+        <Transition
+          show={show}
+          enter="transform transition duration-[300ms] delay-[500ms]"
+          enterFrom="opacity-0 scale-110"
+          enterTo="opacity-100 scale-100"
+          leave="transform duration-[300ms] transition ease-in-out"
+          leaveFrom="opacity-100 scale-100"
+          leaveTo="opacity-0 scale-90"
+          className="flex flex-col justify-center items-center w-full h-full"
         >
-          {/* Search */}
-          <form
-            onSubmit={(e) => searchCity(e)}
-            method="GET"
-            className="flex justify-start items-center mb-6 mt-3 gap-3"
+          <div
+            className={`bg-daisy-bush-950 shadow-inner md:max-w-2xl w-full px-4 py-4 rounded-md text-daisy-bush-50 h-[85vh]`}
           >
-            <div className="w-full relative">
-              <input
+            <div className="w-full mb-5 px-3 py-2 relative">
+              <div
                 type="text"
-                autoComplete="off"
-                name="search"
-                id="search"
-                onChange={(e) => handleChange(e)}
-                value={search}
-                required
-                placeholder="Cari Desa, Kecamatan, Kota"
-                className="px-3 ps-8 py-2 rounded-md w-full selection:text-blue-custom-900 selection:bg-blue-custom-100 text-blue-custom-900 focus:outline-none"
-              />
-              <i className="bi bi-geo-fill text-lg text-blue-custom-950 absolute left-1.5 opacity-70 top-1.5"></i>
+                name="preview"
+                id="preview"
+                className="w-full text-right rounded-md px-5 h-24 overflow-x-auto bg-daisy-bush-900/40 shadow-daisy-bush-100/30 shadow-inner text-daisy-bush-100 font-bold text-4xl flex justify-end items-center"
+              >
+                {value}
+              </div>
             </div>
-            <button
-              className="rounded-md bg-blue-custom-800 px-3 py-2 h-full"
-              type="submit"
+            <Transition
+              show={show}
+              enter={`transform transition duration-[300ms] delay-[4000ms]`}
+              enterFrom="opacity-0 scale-110"
+              enterTo="opacity-100 scale-100"
+              leave="transform duration-[300ms] transition ease-in-out"
+              leaveFrom="opacity-100 scale-100"
+              leaveTo="opacity-0 scale-90"
+              className="grid grid-cols-4 h-[67vh] md:h-[62vh] gap-4 px-3 py-2"
             >
-              <i className="bi bi-search mb-2 font-semibold text-blue-custom-100"></i>
-            </button>
-          </form>
-
-          {/* Data */}
-          <Transition
-            show={data == null}
-            enter="transform transition duration-[300ms] delay-[500ms]"
-            enterFrom="opacity-0 scale-110"
-            enterTo="opacity-100 scale-100"
-            leave="transform duration-[300ms] transition ease-in-out"
-            leaveFrom="opacity-100 scale-100"
-            leaveTo="opacity-0 scale-90"
-          >
-            {" "}
-            <div className="flex justify-center h-full mt-40 gap-7 items-center flex-col">
-              <i className="bi bi-search text-8xl"></i>
-              <div className="text-2xl">Cari Lokasi di Cuaca-Ku</div>
-            </div>
-          </Transition>
-
-          <Transition
-            show={!finding && data != null}
-            enter="transform transition duration-[300ms] delay-[300ms]"
-            enterFrom="opacity-0 scale-110"
-            enterTo="opacity-100 scale-100"
-            leave="transform duration-[300ms] transition ease-in-out"
-            leaveFrom="opacity-100 scale-100"
-            leaveTo="opacity-0 scale-90"
-          >
-            {data?.message ? (
-              <div className="flex justify-center h-full mt-40 gap-7 items-center flex-col">
-                <i className="bi bi-patch-question-fill text-8xl"></i>
-                <div className="text-2xl">Lokasi Tidak Ditemukan</div>
-              </div>
-            ) : (
-              <div className="">
-                <div className="flex justify-center items-center mb-8 flex-col">
-                  <div className="flex justify-center items-center flex-col">
-                    <div className="">
-                      <img
-                        src={`https://openweathermap.org/img/wn/${data?.weather[0].icon}@2x.png`}
-                        alt={data?.weather[0].description}
-                        className="h-36"
-                      />
-                    </div>
-                    <div className="text-6xl mb-2">
-                      {Math.floor(data?.main.temp)}°c
-                    </div>
-                    <div className="text-md mb-2 capitalize">
-                      {data?.weather[0].description}
-                    </div>
-                    <div className="text-3xl">{data?.name}</div>
-                  </div>
-                </div>
-                <div className="grid grid-cols-2 gap-8 w-full">
-                  <div className="flex justify-center gap-4 items-center">
-                    <i className="bi bi-water text-2xl opacity-70"></i>
-                    <div className="flex flex-col">
-                      <span className="text-xl">{data?.main.humidity}%</span>
-                      <div className="opacity-70 text-sm">Kelembaban</div>
-                    </div>
-                  </div>
-                  <div className="flex justify-center gap-4 items-center">
-                    <i className="bi bi-arrow-bar-down text-2xl opacity-70"></i>
-                    <div className="flex flex-col">
-                      <span className="text-xl">
-                        {data?.main.pressure} mbar
-                      </span>
-                      <div className="opacity-70 text-sm">Tekanan</div>
-                    </div>
-                  </div>
-                  <div className="flex justify-center gap-4 items-center">
-                    <i className="bi bi-wind text-2xl opacity-70"></i>
-                    <div className="flex flex-col">
-                      <span className="text-xl">{data?.wind.speed} km/j</span>
-                      <div className="opacity-70 hidden md:block text-sm">
-                        Kecepatan Angin
-                      </div>
-                      <div className="md:hidden flex flex-col">
-                        <span className="opacity-70 text-sm">Kecepatan</span>
-                        <span className="opacity-70 text-sm">Angin</span>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="flex justify-center gap-4 items-center">
-                    <i className="bi bi-thermometer-half text-2xl opacity-70"></i>
-                    <div className="flex flex-col">
-                      <span className="text-xl">
-                        {Math.floor(data?.main.feels_like)}°c
-                      </span>
-                      <div className="opacity-70 text-sm">Suhu Yang Terasa</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-          </Transition>
-        </div>
-      </Transition>
+              <Button value={7} type={"number"} name={7} key={7} />
+              <Button value={8} type={"number"} name={8} key={8} />
+              <Button value={9} type={"number"} name={9} key={9} />
+              <Button
+                value={"DEL"}
+                type={"delete"}
+                name={"backspace"}
+                key={"Backspace"}
+              />
+              <Button value={4} type={"number"} name={4} key={4} />
+              <Button value={5} type={"number"} name={5} key={5} />
+              <Button value={6} type={"number"} name={6} key={6} />
+              <Button value={"+"} type={"operator"} name={"+"} key={"+"} />
+              <Button value={1} type={"number"} name={1} key={1} />
+              <Button value={2} type={"number"} name={2} key={2} />
+              <Button value={3} type={"number"} name={3} key={3} />
+              <Button value={"-"} type={"operator"} name={"-"} key={"-"} />
+              <Button value={"."} type={"dot"} name={"."} key={"."} />
+              <Button value={0} type={"number"} name={0} key={0} />
+              <Button value={"/"} type={"operator"} name={"/"} key={"/"} />
+              <Button value={"*"} type={"operator"} name={"X"} key={"*"} />
+              <Button value={"AC"} type={"clear"} name={"AC"} key={"Delete"} />
+              <Button value={"="} type={"equal"} name={"="} key={"Enter"} />
+            </Transition>
+          </div>
+        </Transition>
+      </div>
     </>
   );
 };

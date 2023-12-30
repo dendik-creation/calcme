@@ -1,10 +1,10 @@
 import React from "react";
-import { WeatherMain } from "./components/WeatherMain";
+import { CalcMain } from "./components/CalcMain";
 
 export const App = () => {
   return (
     <>
-      <WeatherMain />
+      <CalcMain />
     </>
   );
 };

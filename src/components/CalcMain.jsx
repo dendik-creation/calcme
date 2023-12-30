@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { StartApp } from "./StartApp";
 import { ContentApp } from "./ContentApp";
 import { Transition } from "@headlessui/react";
-export const WeatherMain = () => {
+export const CalcMain = () => {
   const [isLoading, setLoading] = useState(true);
   const handleChange = (data) => {
     setLoading(data);
