@@ -4,37 +4,42 @@ import { buttons } from "./data/Button";
 export const ContentApp = () => {
   const [show, setShow] = useState(false);
   const [value, setValue] = useState("");
+  const [answered, setAnswered] = useState(false);
   useEffect(() => {
     setTimeout(() => {
       setShow(true);
     }, 500);
   }, []);
 
-  useEffect(() => {
-    document.addEventListener("keyup", (e) => {
-      const found = buttons.find((item) => item.key == e.key);
-      if (found) {
-        //
-        clickSound();
-        buttonClick(`${found.value}-btn`);
-        setTimeout(() => {
-          if (
-            found.type == "number" ||
-            found.type == "operator" ||
-            found.type == "dot"
-          ) {
-            setValue((prev) => prev + found.value);
-          } else if (found.type == "delete") {
-            setValue((prev) => prev.slice(0, -1));
-          } else if (found.type == "clear") {
-            setValue("");
-          } else if (found.type == "equal") {
-            handleCalculate();
-          }
-        }, 150);
-      }
-    });
-  }, []);
+  // KeyPad
+  // useEffect(() => {
+  //   document.addEventListener("keyup", (e) => {
+  //     const found = buttons.find((item) => item.key == e.key);
+  //     if (found) {
+  //       //
+  //       clickSound();
+  //       buttonClick(`${found.value}-btn`);
+  //       setTimeout(() => {
+  //         if (
+  //           found.type == "number" ||
+  //           found.type == "operator" ||
+  //           found.type == "dot"
+  //         ) {
+  //           setValue((prev) => prev + found.value);
+  //         }
+  //         if (found.type == "delete") {
+  //           setValue((prev) => prev.slice(0, -1));
+  //         }
+  //         if (found.type == "clear") {
+  //           setValue("");
+  //         }
+  //         if (found.type == "equal") {
+  //           handleCalculate();
+  //         }
+  //       }, 150);
+  //     }
+  //   });
+  // }, []);
 
   const clickSound = () => {
     const click = new Audio("./click.wav");
@@ -80,6 +85,10 @@ export const ContentApp = () => {
   };
 
   const handleClick = async (event) => {
+    if (answered) {
+      setValue("");
+      setAnswered(false);
+    }
     clickSound();
     buttonClick(event.target.id);
     setTimeout(() => {
@@ -91,7 +100,9 @@ export const ContentApp = () => {
     try {
       const result = eval(value);
       setValue(result.toString());
+      setAnswered(true);
     } catch (error) {
+      setAnswered(true);
       setValue("Error");
     }
   };
@@ -124,7 +135,7 @@ export const ContentApp = () => {
   };
   return (
     <>
-      <div className="flex flex-col mb-10 justify-center items-start w-full">
+      <div className="flex flex-col justify-center items-start w-full">
         <Transition
           show={show}
           enter="transform transition duration-[300ms] delay-[500ms]"
