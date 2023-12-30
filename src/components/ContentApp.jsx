@@ -1,6 +1,6 @@
 import { Transition } from "@headlessui/react";
 import React, { useEffect, useState } from "react";
-import { buttons } from "./data/Button";
+// import { buttons } from "./data/Button";
 export const ContentApp = () => {
   const [show, setShow] = useState(false);
   const [value, setValue] = useState("");
