@@ -61,7 +61,7 @@ export const ContentApp = () => {
               props.type == "delete") &&
             value == ""
           }
-          className={`flex justify-center transition-all disabled:transition-all text-2xl font-bold items-center disabled:opacity-30 h-full rounded-md shadow-inner shadow-daisy-bush-100/30 ${
+          className={`flex relative overflow-hidden justify-center transition-all disabled:transition-all text-3xl font-bold items-center disabled:opacity-30 h-full rounded-md shadow-inner shadow-daisy-bush-100/30 ${
             props.type == "number" || props.type == "dot"
               ? "bg-daisy-bush-900"
               : props.type == "delete" || props.type == "clear"
@@ -83,19 +83,24 @@ export const ContentApp = () => {
           ) : (
             props.name
           )}
+          <div
+            id={`${props.value}-btn-active`}
+            style={{ display: "none" }}
+            className="absolute bottom-0 left-0 bg-gradient-to-t from-daisy-bush-50/20 to-daisy-bush-50/0 w-full h-full"
+          ></div>
         </button>
       </>
     );
   };
 
   const handleClick = async (event) => {
-    if (answered) {
-      setValue("");
-      setAnswered(false);
-    }
     clickSound();
     buttonClick(event.target.id);
     setTimeout(() => {
+      if (answered) {
+        setValue("");
+        setAnswered(false);
+      }
       handleChange(event.target.name, event.target.value);
     }, 150);
   };
@@ -144,12 +149,15 @@ export const ContentApp = () => {
 
   const buttonClick = (id) => {
     const btnId = document.getElementById(id);
+    const btnIdActive = document.getElementById(`${id}-active`);
     if (btnId) {
       btnId.style.transition = "all ease 0.3s";
       btnId.style.transform = "translateY(15px)";
+      btnIdActive.style.display = "block";
       setTimeout(() => {
         btnId.style.transition = "all ease 0.3s";
         btnId.style.transform = "translateY(0px)";
+        btnIdActive.style.display = "none";
       }, 50);
     }
   };
@@ -158,8 +166,8 @@ export const ContentApp = () => {
       <div className="flex flex-col justify-center items-start w-full">
         <Transition
           show={show}
-          enter="transform transition duration-[300ms] delay-[500ms]"
-          enterFrom="opacity-0 scale-110"
+          enter="transform transition duration-[300ms] delay-[100ms]"
+          enterFrom="opacity-0 scale-90"
           enterTo="opacity-100 scale-100"
           leave="transform duration-[300ms] transition ease-in-out"
           leaveFrom="opacity-100 scale-100"
@@ -169,14 +177,24 @@ export const ContentApp = () => {
           <div
             className={`bg-daisy-bush-950 relative shadow-inner md:max-w-2xl z-0 overflow-hidden w-full px-4 py-4 rounded-md text-daisy-bush-50 h-[85vh]`}
           >
-            <div className="w-full mb-5 px-3 py-2 relative z-20">
+            <div className="w-full mb-5 px-3 py-2 relative z-20 overflow-hidden">
               <div
                 type="text"
                 name="preview"
                 id="preview"
-                className="w-full text-right rounded-md z-20 px-5 h-24 overflow-x-auto bg-daisy-bush-900/40 shadow-daisy-bush-100/30 shadow-inner text-daisy-bush-100 font-bold text-4xl flex justify-end items-center"
+                className="w-full text-right relative overflow-hidden rounded-md z-20 px-5 h-24 overflow-x-auto bg-daisy-bush-900/40 shadow-daisy-bush-100/30 shadow-inner text-daisy-bush-100 font-bold text-4xl flex justify-end items-center"
               >
                 <RegexShowValue />
+                <Transition
+                  show={answered}
+                  enter="transform transition duration-[300ms] delay-[100ms]"
+                  enterFrom="opacity-0 translate-y-24"
+                  enterTo="opacity-100 translate-y-0"
+                  leave="transform duration-[300ms] transition ease-in-out"
+                  leaveFrom="opacity-100 translate-y-0"
+                  leaveTo="opacity-0 translate-y-24"
+                  className="absolute w-full fa-fade -top-0 right-0 bg-gradient-to-t from-daisy-bush-400/20 to-daisy-bush-400/0 h-full"
+                ></Transition>
               </div>
             </div>
             <Transition

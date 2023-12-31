@@ -25,22 +25,22 @@ export const StartApp = (props) => {
         <Transition
           show={show}
           enter="transform transition duration-[300ms] delay-[200ms] ease-in-out"
-          enterFrom="opacity-0 scale-125"
+          enterFrom="opacity-0 scale-90"
           enterTo="opacity-100 scale-100"
           leave="transform duration-[300ms] transition ease-in-out"
           leaveFrom="opacity-100 scale-100"
-          leaveTo="opacity-0 scale-0"
+          leaveTo="opacity-0 scale-90"
         >
           <i className="fa-solid fa-calculator text-daisy-bush-950 text-7xl fa-fade"></i>
         </Transition>
         <Transition
           show={show}
           enter="transform transition duration-[300ms] delay-[200ms] ease-in-out"
-          enterFrom="opacity-0 scale-0"
+          enterFrom="opacity-0 scale-90"
           enterTo="opacity-100 scale-100"
           leave="transform duration-[300ms] transition ease-in-out"
           leaveFrom="opacity-100 scale-100"
-          leaveTo="opacity-0 scale-0"
+          leaveTo="opacity-0 scale-90"
           className="text-center mb-20"
         >
           <h2 className="text-5xl mb-2 font-semibold text-daisy-bush-950">
