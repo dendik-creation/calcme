@@ -55,7 +55,11 @@ export const ContentApp = () => {
           onClick={handleClick}
           name={props.type}
           disabled={
-            (props.type == "equal" || props.type == "operator") && value == ""
+            (props.type == "equal" ||
+              props.type == "operator" ||
+              props.type == "clear" ||
+              props.type == "delete") &&
+            value == ""
           }
           className={`flex justify-center transition-all disabled:transition-all text-2xl font-bold items-center disabled:opacity-30 h-full rounded-md shadow-inner shadow-daisy-bush-100/30 ${
             props.type == "number" || props.type == "dot"
@@ -107,6 +111,22 @@ export const ContentApp = () => {
     }
   };
 
+  const RegexShowValue = () => {
+    const targetReplace = ["\\*", "/", "\\+", "\\-"];
+
+    const replaceValue = [" × ", " ÷ ", " + ", " - "];
+
+    let modifiedString = value;
+    targetReplace.forEach((item, index) => {
+      modifiedString = modifiedString.replace(
+        new RegExp(item, "g"),
+        replaceValue[index]
+      );
+    });
+
+    return modifiedString;
+  };
+
   const handleChange = (type, newValue) => {
     if (type == "number" || type == "operator" || type == "dot") {
       setValue((prev) => prev + newValue);
@@ -147,16 +167,16 @@ export const ContentApp = () => {
           className="flex flex-col justify-center items-center w-full h-full"
         >
           <div
-            className={`bg-daisy-bush-950 shadow-inner md:max-w-2xl w-full px-4 py-4 rounded-md text-daisy-bush-50 h-[85vh]`}
+            className={`bg-daisy-bush-950 relative shadow-inner md:max-w-2xl z-0 overflow-hidden w-full px-4 py-4 rounded-md text-daisy-bush-50 h-[85vh]`}
           >
-            <div className="w-full mb-5 px-3 py-2 relative">
+            <div className="w-full mb-5 px-3 py-2 relative z-20">
               <div
                 type="text"
                 name="preview"
                 id="preview"
-                className="w-full text-right rounded-md px-5 h-24 overflow-x-auto bg-daisy-bush-900/40 shadow-daisy-bush-100/30 shadow-inner text-daisy-bush-100 font-bold text-4xl flex justify-end items-center"
+                className="w-full text-right rounded-md z-20 px-5 h-24 overflow-x-auto bg-daisy-bush-900/40 shadow-daisy-bush-100/30 shadow-inner text-daisy-bush-100 font-bold text-4xl flex justify-end items-center"
               >
-                {value}
+                <RegexShowValue />
               </div>
             </div>
             <Transition
@@ -167,7 +187,7 @@ export const ContentApp = () => {
               leave="transform duration-[300ms] transition ease-in-out"
               leaveFrom="opacity-100 scale-100"
               leaveTo="opacity-0 scale-90"
-              className="grid grid-cols-4 h-[67vh] md:h-[62vh] gap-4 px-3 py-2"
+              className="grid grid-cols-4 h-[67vh] z-20 md:h-[62vh] gap-4 px-3 py-2"
             >
               <Button value={7} type={"number"} name={7} key={7} />
               <Button value={8} type={"number"} name={8} key={8} />
@@ -189,7 +209,7 @@ export const ContentApp = () => {
               <Button value={"."} type={"dot"} name={"."} key={"."} />
               <Button value={0} type={"number"} name={0} key={0} />
               <Button value={"/"} type={"operator"} name={"/"} key={"/"} />
-              <Button value={"*"} type={"operator"} name={"X"} key={"*"} />
+              <Button value={"*"} type={"operator"} name={"×"} key={"*"} />
               <Button value={"AC"} type={"clear"} name={"AC"} key={"Delete"} />
               <Button value={"="} type={"equal"} name={"="} key={"Enter"} />
             </Transition>
